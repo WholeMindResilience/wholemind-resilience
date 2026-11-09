@@ -181,21 +181,35 @@ function NavItem({ item, route, activeKey }) {
   const timer = React.useRef(null);
   useEffect(() => { setOpen(false); }, [route]);
   useEffect(() => () => clearTimeout(timer.current), []);
-  const show = () => { clearTimeout(timer.current); if (sub) setOpen(true); };
-  const hide = () => { clearTimeout(timer.current); timer.current = setTimeout(() => setOpen(false), 180); };
+  const mq = () => (window.matchMedia && (window.matchMedia('(hover: none)').matches || window.matchMedia('(max-width: 1060px)').matches));
+  const [compact, setCompact] = useState(mq());
+  useEffect(() => {
+    const f = () => setCompact(mq());
+    window.addEventListener('resize', f);
+    return () => window.removeEventListener('resize', f);
+  }, []);
+  useEffect(() => {
+    if (!open || !compact) return;
+    const away = (e) => { if (!e.target.closest || !e.target.closest('li.has-sub')) setOpen(false); };
+    document.addEventListener('click', away);
+    return () => document.removeEventListener('click', away);
+  }, [open, compact]);
+  const show = () => { if (compact) return; clearTimeout(timer.current); if (sub) setOpen(true); };
+  const hide = () => { if (compact) return; clearTimeout(timer.current); timer.current = setTimeout(() => setOpen(false), 180); };
   const choose = (k) => { clearTimeout(timer.current); setOpen(false); if (document.activeElement) document.activeElement.blur(); go(k); };
   return (
-    <li className={sub ? 'has-sub' : ''} onMouseEnter={show} onMouseLeave={hide}>
-      <button className={activeKey === key ? 'active' : ''} onClick={() => choose(key)}>
+    <li className={sub ? 'has-sub' : ''} onMouseEnter={show} onMouseLeave={hide} style={compact && sub && open ? { flexBasis: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' } : undefined}>
+      <button className={activeKey === key ? 'active' : ''} aria-expanded={sub ? open : undefined} onClick={() => (compact && sub ? setOpen(!open) : choose(key))}>
         {label}{sub ? <span className="caret"> &#9662;</span> : null}
       </button>
       {sub && (
         <ul
           className="sub-menu"
           style={{
-            position: 'absolute', top: 'calc(100% + 2px)', left: -12, minWidth: 200, margin: 0, padding: 6,
+            position: compact ? 'static' : 'absolute', top: 'calc(100% + 2px)', left: -12, minWidth: 200, margin: compact ? '6px auto 4px' : 0, padding: 6,
+            display: compact ? (open ? 'inline-block' : 'none') : 'block',
             listStyle: 'none', background: '#fff', border: '1px solid var(--line)', borderRadius: 14,
-            boxShadow: '0 8px 22px rgba(43,42,36,.09)', zIndex: 60, display: 'block',
+            boxShadow: '0 8px 22px rgba(43,42,36,.09)', zIndex: 60,
             opacity: open ? 1 : 0,
             visibility: open ? 'visible' : 'hidden',
             pointerEvents: open ? 'auto' : 'none',
