@@ -198,7 +198,7 @@ function NavItem({ item, route, activeKey }) {
   const hide = () => { if (compact) return; clearTimeout(timer.current); timer.current = setTimeout(() => setOpen(false), 180); };
   const choose = (k) => { clearTimeout(timer.current); setOpen(false); if (document.activeElement) document.activeElement.blur(); go(k); };
   return (
-    <li className={sub ? 'has-sub' : ''} onMouseEnter={show} onMouseLeave={hide} style={compact && sub && open ? { flexBasis: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' } : undefined}>
+    <li className={sub ? 'has-sub' : ''} onMouseEnter={show} onMouseLeave={hide}>
       <button className={activeKey === key ? 'active' : ''} aria-expanded={sub ? open : undefined} onClick={() => (compact && sub ? setOpen(!open) : choose(key))}>
         {label}{sub ? <span className="caret"> &#9662;</span> : null}
       </button>
@@ -206,14 +206,14 @@ function NavItem({ item, route, activeKey }) {
         <ul
           className="sub-menu"
           style={{
-            position: compact ? 'static' : 'absolute', top: 'calc(100% + 2px)', left: -12, minWidth: 200, margin: compact ? '6px auto 4px' : 0, padding: 6,
-            display: compact ? (open ? 'inline-block' : 'none') : 'block',
+            position: 'absolute', top: 'calc(100% + 2px)', left: compact ? '50%' : -12, minWidth: 200, margin: 0, padding: 6,
+            display: 'block',
             listStyle: 'none', background: '#fff', border: '1px solid var(--line)', borderRadius: 14,
             boxShadow: '0 8px 22px rgba(43,42,36,.09)', zIndex: 60,
             opacity: open ? 1 : 0,
             visibility: open ? 'visible' : 'hidden',
             pointerEvents: open ? 'auto' : 'none',
-            transform: open ? 'translateY(0)' : 'translateY(-6px)',
+            transform: (compact ? 'translateX(-50%) ' : '') + (open ? 'translateY(0)' : 'translateY(-6px)'),
             transition: 'opacity .2s ease, transform .2s ease, visibility .2s',
           }}
         >
