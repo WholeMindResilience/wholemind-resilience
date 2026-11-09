@@ -8,6 +8,14 @@ function useRoute() {
     window.addEventListener('hashchange', onChange);
     return () => window.removeEventListener('hashchange', onChange);
   }, []);
+  useEffect(() => {
+    try { if ('scrollRestoration' in window.history) window.history.scrollRestoration = 'manual'; } catch (e) {}
+  }, []);
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    const t = setTimeout(() => window.scrollTo(0, 0), 60);
+    return () => clearTimeout(t);
+  }, [route]);
   return route;
 }
 function go(page) { window.location.hash = '/' + page; window.scrollTo(0, 0); }
