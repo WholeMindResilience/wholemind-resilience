@@ -129,6 +129,8 @@ function SocialLinks({ size = 18, labels = false }) {
 /* Navigation styles live here (not only in index.html) so the top bar
    always lays out correctly, even if index.html is an older copy. */
 const NAV_CSS = `
+.site-nav{ position:static !important; }
+
 .policy-body{max-width:720px;margin:0 auto;font-size:15px;line-height:1.7;text-align:left}
 .policy-body h2{font-family:'Playfair Display',serif;font-size:22px;margin:34px 0 10px}
 .policy-body h3{font-family:'Playfair Display',serif;font-size:17px;margin:22px 0 8px}
@@ -360,7 +362,7 @@ function Footer() {
         <a href="#/policy-accessibility">Accessibility</a>
         <a href="#/policy-complaints">Complaints</a>
         <a href="#/policy-whistleblowing">Whistleblowing</a>
-        <a href="#/policy-volunteer">Volunteer Policy</a>
+        <a href="#/policy-volunteer">Volunteer Statement</a>
       </div>
       <p>WholeMind Resilience CIC · Registered in England and Wales · Company number 17367582</p>
       <p className="footer-address">Registered office: Carrow House, 301 King Street, Norwich, NR1 2TG · © {new Date().getFullYear()}</p>
