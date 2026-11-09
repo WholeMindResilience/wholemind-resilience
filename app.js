@@ -175,9 +175,10 @@ const NAV_CSS = `
 }
 `;
 
-function NavItem({ item, route, activeKey }) {
+function NavItem({ item, route, activeKey, openKey, setOpenKey }) {
   const [key, label, sub] = item;
-  const [open, setOpen] = useState(false);
+  const open = openKey === key;
+  const setOpen = (v) => setOpenKey(prev => (v ? key : (prev === key ? null : prev)));
   const timer = React.useRef(null);
   useEffect(() => { setOpen(false); }, [route]);
   useEffect(() => () => clearTimeout(timer.current), []);
@@ -227,6 +228,7 @@ function NavItem({ item, route, activeKey }) {
 }
 
 function Nav({ route }) {
+  const [openKey, setOpenKey] = useState(null);
   let activeKey = route;
   if (route.startsWith('programmes') || route === 'events') activeKey = 'programmes-individuals';
   else if (route === 'projects') activeKey = 'about';
@@ -239,7 +241,7 @@ function Nav({ route }) {
           <img className="woodmark" src="logo-woodmark.svg" alt="WholeMind Resilience" />
         </button>
         <ul className="nav-links">
-          {NAV_ITEMS.map(item => <NavItem key={item[0]} item={item} route={route} activeKey={activeKey} />)}
+          {NAV_ITEMS.map(item => <NavItem key={item[0]} item={item} route={route} activeKey={activeKey} openKey={openKey} setOpenKey={setOpenKey} />)}
           <li className="nav-social"><SocialLinks size={17} /></li>
         </ul>
       </div>
